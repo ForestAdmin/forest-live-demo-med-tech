@@ -6,8 +6,21 @@ const { collection } = require('forest-express-sequelize');
 // - Smart relationships: https://docs.forestadmin.com/documentation/reference-guide/relationships/create-a-smart-relationship
 // - Smart segments: https://docs.forestadmin.com/documentation/reference-guide/segments/smart-segments
 collection('appointments', {
-  actions: [],
+  actions: [{
+    name: 'Send email reminder'
+  }, {
+    name: 'Reschedule',
+    type: 'single',
+    fields: [{
+      field: 'Set new date and time',
+      type: 'Date'
+    }, {
+      field: 'Reason for change',
+      type: 'Enum',
+      enums: ['Emergency', 'Transportation issues', 'Conflict with other commitments','Scheduling error']
+    }]
+  }],
   fields: [],
   segments: [],
-  
+
 });

@@ -9,6 +9,16 @@ const permissionMiddlewareCreator = new PermissionMiddlewareCreator('appointment
 // - Native routes are already generated but can be extended/overriden - Learn how to extend a route here: https://docs.forestadmin.com/documentation/reference-guide/routes/extend-a-route
 // - Smart action routes will need to be added as you create new Smart Actions - Learn how to create a Smart Action here: https://docs.forestadmin.com/documentation/reference-guide/actions/create-and-manage-smart-actions
 
+// Smart actions
+router.post('/actions/send-email-reminder', permissionMiddlewareCreator.smartAction(), (req, res) => {
+  res.send({ success: 'The email was successfully sent' });
+});
+
+router.post('/actions/reschedule', permissionMiddlewareCreator.smartAction(), (req, res) => {
+  res.send({ success: 'The meeting was rescheduled' });
+});
+
+
 // Create a Appointment
 router.post('/appointments', permissionMiddlewareCreator.create(), (request, response, next) => {
   // Learn what this route does here: https://docs.forestadmin.com/documentation/reference-guide/routes/default-routes#create-a-record

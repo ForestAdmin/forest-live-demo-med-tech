@@ -173,7 +173,58 @@
       }]
     }],
     "segments": [],
-    "actions": []
+    "actions": [{
+      "name": "Reschedule",
+      "type": "single",
+      "baseUrl": null,
+      "endpoint": "/forest/actions/reschedule",
+      "httpMethod": "POST",
+      "redirect": null,
+      "download": false,
+      "fields": [{
+        "field": "Set new date and time",
+        "type": "Date",
+        "defaultValue": null,
+        "enums": null,
+        "isRequired": false,
+        "reference": null,
+        "description": null,
+        "position": 0,
+        "widget": null
+      }, {
+        "field": "Reason for change",
+        "type": "Enum",
+        "defaultValue": null,
+        "enums": [
+          "Emergency",
+          "Transportation issues",
+          "Conflict with other commitments",
+          "Scheduling error"
+        ],
+        "isRequired": false,
+        "reference": null,
+        "description": null,
+        "position": 1,
+        "widget": null
+      }],
+      "hooks": {
+        "load": false,
+        "change": []
+      }
+    }, {
+      "name": "Send email reminder",
+      "type": "bulk",
+      "baseUrl": null,
+      "endpoint": "/forest/actions/send-email-reminder",
+      "httpMethod": "POST",
+      "redirect": null,
+      "download": false,
+      "fields": [],
+      "hooks": {
+        "load": false,
+        "change": []
+      }
+    }]
   }, {
     "name": "clinics",
     "nameOld": "clinics",
@@ -837,7 +888,20 @@
       "validations": []
     }],
     "segments": [],
-    "actions": []
+    "actions": [{
+      "name": "Start a call",
+      "type": "single",
+      "baseUrl": null,
+      "endpoint": "/forest/actions/start-a-call",
+      "httpMethod": "POST",
+      "redirect": null,
+      "download": false,
+      "fields": [],
+      "hooks": {
+        "load": false,
+        "change": []
+      }
+    }]
   }, {
     "name": "prescriptions",
     "nameOld": "prescriptions",
@@ -1001,7 +1065,7 @@
     "stack": {
       "database_type": "postgres",
       "engine": "nodejs",
-      "engine_version": "16.14.0",
+      "engine_version": "16.13.0",
       "orm_version": "5.15.2"
     }
   }

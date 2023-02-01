@@ -9,6 +9,29 @@ const permissionMiddlewareCreator = new PermissionMiddlewareCreator('patients');
 // - Native routes are already generated but can be extended/overriden - Learn how to extend a route here: https://docs.forestadmin.com/documentation/reference-guide/routes/extend-a-route
 // - Smart action routes will need to be added as you create new Smart Actions - Learn how to create a Smart Action here: https://docs.forestadmin.com/documentation/reference-guide/actions/create-and-manage-smart-actions
 
+
+// Smart actions
+router.post('/actions/start-a-call', permissionMiddlewareCreator.smartAction(), (req, res) => {
+  const id = req.body.data.attributes.ids[0];
+
+  patients.findByPk(id)
+    .then(patient => {
+      return patient.contactInfo;
+    })
+    .then(contact => {
+      res.send({ success: 'Calling '+ contact });
+    })
+
+  // patients.findByPk(id)
+  //   .then(patient => {
+  //     return patient.contactInfo
+  //       .then(contactInfo => {
+  //         res.send({ success: 'Calling #{contactInfo}' });
+  //       })
+  //   })
+
+});
+
 // Create a Patient
 router.post('/patients', permissionMiddlewareCreator.create(), (request, response, next) => {
   // Learn what this route does here: https://docs.forestadmin.com/documentation/reference-guide/routes/default-routes#create-a-record
