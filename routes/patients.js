@@ -21,15 +21,6 @@ router.post('/actions/start-a-call', permissionMiddlewareCreator.smartAction(), 
     .then(contact => {
       res.send({ success: 'Calling '+ contact });
     })
-
-  // patients.findByPk(id)
-  //   .then(patient => {
-  //     return patient.contactInfo
-  //       .then(contactInfo => {
-  //         res.send({ success: 'Calling #{contactInfo}' });
-  //       })
-  //   })
-
 });
 
 // Create a Patient
