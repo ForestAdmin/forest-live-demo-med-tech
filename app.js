@@ -62,6 +62,10 @@ app.use(jwt({
 }));
 
 app.use('/forest', (request, response, next) => {
+  if (PUBLIC_ROUTES.includes(request.url)) {
+    return next();
+  }
+
   if (request.method !== 'GET'
       && !request.originalUrl.startsWith('/forest/stats')
       && !request.originalUrl.includes('/hooks/load')
@@ -76,9 +80,6 @@ app.use('/forest', (request, response, next) => {
     return response.status(403).send(errorMessage);
   }
 
-  if (PUBLIC_ROUTES.includes(request.url)) {
-    return next();
-  }
   return ensureAuthenticated(request, response, next);
 });
 
