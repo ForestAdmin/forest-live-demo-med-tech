@@ -36,6 +36,12 @@ app.use((req, res, next) => {
   }
   next(null);
 });
+
+app.use((req, res, next) => {
+  req.headers.authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIzNjk1IiwiZW1haWwiOiJzdGV2ZWJAZm9yZXN0YWRtaW4uY29tIiwiZmlyc3ROYW1lIjoiU3RldmUiLCJsYXN0TmFtZSI6IkJ1bmxvbiIsInRlYW0iOiJPcGVyYXRpb25zIiwicm9sZSI6Ik9wZXJhdGlvbnMiLCJ0YWdzIjpbeyJrZXkiOiJpc1BheWluZyIsInZhbHVlIjoidHJ1ZSJ9XSwicGVybWlzc2lvbkxldmVsIjoiYWRtaW4iLCJyZW5kZXJpbmdJZCI6MTc2MzUwLCJpYXQiOjE2NzYwMjE2NDF9.j-sVi_-RagGb2rO7KbhsTh2r0X8iRM3RkSvWyaie8Wk';
+  next();
+});
+
 app.use('/forest/authentication', cors({
   ...corsConfig,
   // The null origin is sent by browsers for redirected AJAX calls
@@ -56,6 +62,20 @@ app.use(jwt({
 }));
 
 app.use('/forest', (request, response, next) => {
+  if (request.method !== 'GET'
+      && !request.originalUrl.startsWith('/forest/stats')
+      && !request.originalUrl.includes('/hooks/load')
+      && !request.originalUrl.includes('/hooks/change')
+  ) {
+    const errorMessage = 'You can only read data on this public demo application.';
+
+    if (request.originalUrl.startsWith('/forest/actions/')) {
+      return response.status(400).send({ error: errorMessage });
+    }
+
+    return response.status(403).send(errorMessage);
+  }
+
   if (PUBLIC_ROUTES.includes(request.url)) {
     return next();
   }
