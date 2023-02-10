@@ -26,6 +26,11 @@ const corsConfig = {
   credentials: true,
 };
 
+app.use((req, res, next) => {
+  req.headers.authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIzNjk1IiwiZW1haWwiOiJzdGV2ZWJAZm9yZXN0YWRtaW4uY29tIiwiZmlyc3ROYW1lIjoiU3RldmUiLCJsYXN0TmFtZSI6IkJ1bmxvbiIsInRlYW0iOiJPcGVyYXRpb25zIiwicm9sZSI6Ik9wZXJhdGlvbnMiLCJ0YWdzIjpbXSwicGVybWlzc2lvbkxldmVsIjoiYWRtaW4iLCJyZW5kZXJpbmdJZCI6MTc2MzUwLCJpYXQiOjE2NzYwMjI5ODZ9.aLmHnM7WffEntHjYL1rkOKE1-TUx0NbI8XD4FJUY6wU';
+  next();
+});
+
 app.use(morgan('tiny'));
 // Support for request-private-network as the `cors` package
 // doesn't support it by default
@@ -35,11 +40,6 @@ app.use((req, res, next) => {
     res.setHeader('access-control-allow-private-network', 'true');
   }
   next(null);
-});
-
-app.use((req, res, next) => {
-  req.headers.authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIzNjk1IiwiZW1haWwiOiJzdGV2ZWJAZm9yZXN0YWRtaW4uY29tIiwiZmlyc3ROYW1lIjoiU3RldmUiLCJsYXN0TmFtZSI6IkJ1bmxvbiIsInRlYW0iOiJPcGVyYXRpb25zIiwicm9sZSI6Ik9wZXJhdGlvbnMiLCJ0YWdzIjpbeyJrZXkiOiJpc1BheWluZyIsInZhbHVlIjoidHJ1ZSJ9XSwicGVybWlzc2lvbkxldmVsIjoiYWRtaW4iLCJyZW5kZXJpbmdJZCI6MTc2MzUwLCJpYXQiOjE2NzYwMjE2NDF9.j-sVi_-RagGb2rO7KbhsTh2r0X8iRM3RkSvWyaie8Wk';
-  next();
 });
 
 app.use('/forest/authentication', cors({
