@@ -1,10 +1,24 @@
+require('dotenv').config();
 const { Sequelize } = require('sequelize');
 const { faker } = require('@faker-js/faker');
 
-const connection = new Sequelize('postgres://forest:secret@localhost:5435/med-tech');
+// Remote
+const connection = new Sequelize(process.env.DATABASE_URL, {
+  dialect: "postgres",
+  /*ssl: {
+    require: true,
+    rejectUnauthorized: false,
+  },
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    }
+  }*/
+});
 
 (async () => {
-  /*const generateFakePatientData = async numIterations => {
+  const generateFakePatientData = async numIterations => {
     const firstNames = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Gary', 'Hannah', 'Ian', 'Julia', 'Karen', 'Larry', 'Maggie', 'Nancy', 'Olivia', 'Pat', 'Quinn', 'Rachel', 'Sam', 'Tina', 'Ursula', 'Victor', 'Wanda', 'Xander', 'Yvonne', 'Zach', 'Sandro', 'Louis', 'Gabriel', 'Monika', 'Ophelie', 'Gautier', 'Adrian', 'Melody', 'Alexia', 'Mary'];
     const lastNames = ['Smith', 'Johnson', 'Williams', 'Jones', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor', 'Anderson', 'Thomas', 'Jackson', 'White', 'Harris', 'Martin', 'Thompson', 'Garcia', 'Martinez', 'Robinson', 'Clark', 'Lewis', 'Parker', 'Baker', 'Green', 'Longbottom', 'Granger', 'Potter', 'Weasley', 'Castle', 'Donovan', 'Gudmansson'];
     const diagnoses = ['Flu', 'Allergies', 'Common cold', 'Bronchitis', 'Pneumonia', 'Ear infection', 'Sinus infection', 'Urinary tract infection', 'Strep throat', 'Skin infection', 'Food poisoning', 'Gastroenteritis', 'Mononucleosis', 'Migraine', 'Back pain', 'Hypertension', 'Acid reflux', 'Bronchiolitis', 'Constipation', 'Dermatitis', 'Diarrhea', 'Dyspepsia', 'Eczema', 'Gastritis', 'Hemorrhoids', 'Indigestion', 'Sore throat', 'Sinusitis', 'Tonsillitis'];
@@ -107,22 +121,19 @@ const connection = new Sequelize('postgres://forest:secret@localhost:5435/med-te
   };
 
 // call the function to create the 100 instances of medication
-  await generateFakeMedicationData(600);*/
+  await generateFakeMedicationData(600);
 
-  //store the patient ids from the DB in order to use them later on for appointments and prescriptions
-  const patientQueryResult = await connection.query('SELECT patient_id FROM patients');
-  const patientIds = patientQueryResult[0].map((p) => p.patient_id );
-  //store the medication ids from the DB in order to use them later on for appointments and prescriptions
-  const medicationsQueryResult = await connection.query('SELECT medication_id FROM medications');
-  const medicationIds = medicationsQueryResult[0].map((p) => p.medication_id );
-  //store the clinics ids from the DB in order to use them later on for appointments and prescriptions
-  const clinicsQueryResult = await connection.query('SELECT clinic_id FROM clinics');
-  const clinicIds = clinicsQueryResult[0].map((p) => p.clinic_id );
-  //store the doctors ids from the DB in order to use them later on for appointments and prescriptions
-  const doctorsQueryResult = await connection.query('SELECT doctor_id FROM doctors');
-  const doctorIds = doctorsQueryResult[0].map((p) => p.doctor_id );
+  const generateFakeAppointmentData = async numIterations => {
+    //store the patient ids from the DB in order to use them later on for appointments and prescriptions
+    const patientQueryResult = await connection.query('SELECT patient_id FROM patients');
+    const patientIds = patientQueryResult[0].map((p) => p.patient_id );
+    //store the clinics ids from the DB in order to use them later on for appointments and prescriptions
+    const clinicsQueryResult = await connection.query('SELECT clinic_id FROM clinics');
+    const clinicIds = clinicsQueryResult[0].map((p) => p.clinic_id );
+    //store the doctors ids from the DB in order to use them later on for appointments and prescriptions
+    const doctorsQueryResult = await connection.query('SELECT doctor_id FROM doctors');
+    const doctorIds = doctorsQueryResult[0].map((p) => p.doctor_id );
 
-  /*const generateFakeAppointmentData = async numIterations => {
     const reasons = ['Routine checkup', 'Sick visit', 'Follow-up', 'Preventative care', 'Other'];
     const queries = [];
     let query = 'INSERT INTO appointments (patient_id, doctor_id, clinic_id, date, time, reason, patient_confirmed, doctor_confirmed) VALUES ';
@@ -148,9 +159,19 @@ const connection = new Sequelize('postgres://forest:secret@localhost:5435/med-te
   };
 
 
-  await generateFakeAppointmentData(100);*/
+  await generateFakeAppointmentData(100);
 
   const generateFakePrescriptionData = async numIterations => {
+    //store the patient ids from the DB in order to use them later on for appointments and prescriptions
+    const patientQueryResult = await connection.query('SELECT patient_id FROM patients');
+    const patientIds = patientQueryResult[0].map((p) => p.patient_id );
+    //store the medication ids from the DB in order to use them later on for appointments and prescriptions
+    const medicationsQueryResult = await connection.query('SELECT medication_id FROM medications');
+    const medicationIds = medicationsQueryResult[0].map((p) => p.medication_id );
+    //store the doctors ids from the DB in order to use them later on for appointments and prescriptions
+    const doctorsQueryResult = await connection.query('SELECT doctor_id FROM doctors');
+    const doctorIds = doctorsQueryResult[0].map((p) => p.doctor_id );
+
     const dosages = ['500mg', '250mg', '100mg', '50mg'];
     const frequencies = ['Once daily', 'Twice daily', 'Three times daily'];
     const queries = [];
@@ -175,6 +196,23 @@ const connection = new Sequelize('postgres://forest:secret@localhost:5435/med-te
   };
 
   await generateFakePrescriptionData(100);
+
+  const generateInsuranceForPatients = async (patients) => {
+    const insurances = ['United Health', 'Kaiser Foundation', 'Anthem Inc.', 'Centene Corporation', 'Humana', 'CVS Health', 'Health Care Service Corporation (HCSC)', 'CIGNA', 'Molina Healthcare', 'Independence Health Group', 'Guidewell Mutual Holding', 'California Physicians’ Service', 'Highmark Group', 'Blue Cross Blue Shield of California', 'Blue Cross of Michigan', 'Blue Cross Blue Shield of New Jersey', 'Caresource', 'UPMC Health System', 'Blue Cross Blue Shield of North Carolina', 'Carefirst Inc.', 'Metropolitan', 'Health Net of California', 'Local Initiative Health Authority', 'Point32Health', 'Blue Cross Blue Shield of Massachusetts']
+    const queries = [];
+
+    for (let i = 1; i <= patients; i++) {
+      const shouldHaveInsurance = Math.random() < 0.85;
+       if (shouldHaveInsurance) {
+         const insuranceName = insurances[Math.floor(Math.random() * insurances.length)];
+         queries.push(`UPDATE patients SET insurance_coverage = true, insurance_name = '${insuranceName}' WHERE patient_id = ${i};`);
+       }
+    }
+
+    await connection.query(queries.join(''));
+  }
+
+  await generateInsuranceForPatients(1000)
 })().catch((e) => {
   console.log(e);
 });
